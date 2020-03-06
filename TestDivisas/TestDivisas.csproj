@@ -79,9 +79,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GenericRepositoryTest.cs" />
+    <Compile Include="LogServicesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RateControllerTest.cs" />
+    <Compile Include="RatesModelTest.cs" />
     <Compile Include="TransactionControllerTest.cs" />
+    <Compile Include="TransactionModelTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

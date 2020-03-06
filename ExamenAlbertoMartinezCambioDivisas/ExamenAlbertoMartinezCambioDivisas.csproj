@@ -139,6 +139,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="InfraestructuraTransversal\Exceptions\SpecificationException.cs" />
     <Compile Include="InfraestructuraTransversal\Exceptions\RatesFactoryExceptions.cs" />
     <Compile Include="InfraestructuraTransversal\Exceptions\RatesRepositoryException.cs" />
     <Compile Include="InfraestructuraTransversal\Exceptions\TransactionRepositoryException.cs" />
@@ -165,6 +166,10 @@
     <Compile Include="Services\Repository\RatesRepository\RatesRepository.cs" />
     <Compile Include="Services\Repository\TransactionsRepository\ITransactionsRepository.cs" />
     <Compile Include="Services\Repository\TransactionsRepository\TransactionsRepository.cs" />
+    <Compile Include="Services\Specification\ISpecificationRates.cs" />
+    <Compile Include="Services\Specification\ISpecificationTransactions.cs" />
+    <Compile Include="Services\Specification\SpecificationRates.cs" />
+    <Compile Include="Services\Specification\SpecificationTransactions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
