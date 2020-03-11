@@ -21,13 +21,13 @@ namespace ExamenAlbertoMartinezCambioDivisas.Services.Factory
                         this._transactionList.Add(item);
                     }
                     else { 
-                        throw new FactoryException("No se ha podido crear el objeto transactions: TransactionsFactory");
+                        throw new FactoryException("No se ha podido crear el objeto transactions: TransactionFactory");
                     }
                 }
             }
             catch (Exception ex)
             {
-                throw new FactoryException("No se ha podido crear el objeto transactions: TransactionsFactory", ex);
+                throw new FactoryException("No se ha podido crear el objeto transactions: TransactionFactory", ex);
 
             }
             return this._transactionList;
