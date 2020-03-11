@@ -3,102 +3,99 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
 using ExamenAlbertoMartinezCambioDivisas.InfraestructuraTransversal.Exceptions;
 using ExamenAlbertoMartinezCambioDivisas.Models;
 using ExamenAlbertoMartinezCambioDivisas.Models.ViewModel;
 using ExamenAlbertoMartinezCambioDivisas.Services.Factory;
-using ExamenAlbertoMartinezCambioDivisas.Services.JsonConverterService;
 using ExamenAlbertoMartinezCambioDivisas.Services.MonedaConverter;
-using Microsoft.Ajax.Utilities;
-using Newtonsoft.Json;
 
 namespace ExamenAlbertoMartinezCambioDivisas.Services.Repository.TransactionsRepository
 {
     public class TransactionsRepository : GenericRepository<Transactions>, ITransactionsRepository
     {
-        private IMonedaConversor conversorMoneda;
+        protected ITransactionsFactory transactionsFactory;
+        protected IMonedaConversor moneyConverter;
 
         public TransactionsRepository()
         {
-            this.conversorMoneda = new MonedaConversor();
+            this.transactionsFactory = new TransactionFactory();
+            this.moneyConverter = new MonedaConversor();
         }
-        public override async Task CargarDatos()
+
+        public TransactionsRepository(ITransactionsFactory factory, IMonedaConversor converter)
         {
-            ITransactionsFactory factory = new TransactionFactory();
-            using var cliente = new HttpClient();
-            try
+            this.transactionsFactory = factory;
+            this.moneyConverter = converter;
+        }
+        public override async Task LoadData()
+        {
+            using (var client = new HttpClient())
             {
+                try
+                {
+                    HttpResponseMessage response = client.GetAsync("http://quiet-stone-2094.herokuapp.com/transactions.json").Result;
+                    List<Transactions> transactions;
+                    string content = response.Content.ReadAsStringAsync().Result;
+                    {
+                        transactions = this._jsonConverter.DeserializeJson(content);
+                    }
 
-                var response = cliente.GetAsync("http://quiet-stone-2094.herokuapp.com/transactions.json").Result;
-                string contenido = response.Content.ReadAsStringAsync().Result;
-                var listaJsonTransactions = Conversor.DeserializeJson(contenido);
+                    this._table.RemoveRange(this._table);
 
-                Table.RemoveRange(Table);
+                    var transactionsList = this.transactionsFactory.CreateTransactionsList(transactions);
+                    this._table.AddRange(transactionsList);
 
-                listaJsonTransactions.ForEach(x => factory.CreateTransaction(x));
-                Table.AddRange(factory.ListaTransactions());
-
-                await Context.SaveChangesAsync();
-
-                //this.conversorMoneda.CargarDatos(Context.Rates.ToList());
-
-            }
-            catch (HttpRequestException)
-            {
-                //this.conversorMoneda.CargarDatos(Context.Rates.ToList());
-            }
-            catch (Exception e)
-            {
-                throw  new TransactionRepositoryException("Error en TransactionRepository ", e);
+                    await this._divisasContext.SaveChangesAsync();
+                }
+                catch (HttpRequestException) { }
+                catch (Exception ex) { throw new RepositoryException("Fallo en el repositorio Transaction", ex); }
             }
         }
 
         public List<ListadoPorSkuVM> ListadoSku()
         {
-            var nuevaListaSkus = new List<ListadoPorSkuVM>();
+            //this.moneyConverter.LoadRatesData(this._divisasContext.Rates.ToList());
 
-            var query = from j in Table
-                group j by j.Sku into Skus
-                select new
-                {
-                    Sku = Skus.Key,
-                    SumaAmounts = Skus.Sum(x => x.Amount),
-                    //aqui usariamos el conversor de monedas
-                    //SumaAmounts = Skus.Sum(x=> this.conversorMoneda.ConversorMoneda(x.Amount, x.Currency, "EUR")),
-                    Moneda = "EUR"
-
-                };
+            var listadoSku = new List<ListadoPorSkuVM>();
+            var query = from transaccion in this._table
+                        group transaccion by transaccion.Sku into transaccionSku
+                        select new
+                        {
+                            Sku = transaccionSku.Key,
+                            SumaTotal = transaccionSku.Sum(x => x.Amount),
+                            //SumaTotal = transaccionSku.Sum(x =>
+                            //    this.moneyConverter.ValueConverter(x.Amount, x.Currency, "EUR")),
+                            Moneda = "EUR"
+                        };
 
             foreach (var item in query)
             {
-                var nuevoSku = new ListadoPorSkuVM
+                var sku = new ListadoPorSkuVM
                 {
-                    Sku =  item.Sku,
-                    SumaAmounts = item.SumaAmounts,
+                    Sku = item.Sku,
+                    SumaAmounts = item.SumaTotal,
                     Moneda = "EUR"
-
                 };
 
-                nuevaListaSkus.Add(nuevoSku);
-
+                listadoSku.Add(sku);
             }
 
-            return nuevaListaSkus;
+            return listadoSku;
         }
 
-        public IQueryable<Transactions> TransactionsPorSku(string sku)
+        public List<Transactions> TransactionsPorSku(string sku)
         {
-            var querySkuPor = from j in Table where j.Sku == sku select j;
+            var query = from transaccion in this._table
+                        where transaccion.Sku == sku
+                        select transaccion;
 
-            //foreach (var item in querySkuPor)
+            //foreach (var item in query)
             //{
-            //    item.Amount = this.conversorMoneda.ConversorMoneda(item.Amount, item.Currency, "EUR");
+            //    item.Amount = this.moneyConverter.ValueConverter(item.Amount, item.Currency, "EUR");
             //    item.Currency = "EUR";
-
             //}
-            
-            return querySkuPor;
+
+            return query.ToList();
         }
     }
 }

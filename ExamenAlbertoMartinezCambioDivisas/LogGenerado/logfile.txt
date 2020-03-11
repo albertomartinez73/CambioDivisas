@@ -1,0 +1,1 @@
+[11/03/2020 11:43:35] LINQ to Entities does not recognize the method 'System.Decimal ValueConverter(System.Decimal, System.String, System.String)' method, and this method cannot be translated into a store expression.

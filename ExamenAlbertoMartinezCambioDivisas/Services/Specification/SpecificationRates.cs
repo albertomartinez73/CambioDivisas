@@ -1,8 +1,6 @@
-﻿using ExamenAlbertoMartinezCambioDivisas.Models;
+﻿using ExamenAlbertoMartinezCambioDivisas.InfraestructuraTransversal.Exceptions;
+using ExamenAlbertoMartinezCambioDivisas.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace ExamenAlbertoMartinezCambioDivisas.Services.Specification
 {
@@ -10,13 +8,15 @@ namespace ExamenAlbertoMartinezCambioDivisas.Services.Specification
     {
         public bool IsSatisfyiedBy(Rates rates)
         {
-            if (!rates.From.Equals("") && !rates.To.Equals(""))
+            try
             {
-                return true;
-
-            } else
+                return !rates.From.Equals("") && rates.From != null
+                       && !rates.To.Equals("") && rates.To != null
+                       && !rates.Rate.Equals("") && rates.Rate != null;
+            }
+            catch (Exception ex)
             {
-                return false;
+                throw new SpecificationException("Error a la hora de validar los Rates: RatesSpecification", ex);
             }
         }
     }

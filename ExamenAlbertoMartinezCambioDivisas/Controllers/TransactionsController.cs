@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using ExamenAlbertoMartinezCambioDivisas.DAL;
 using ExamenAlbertoMartinezCambioDivisas.Models;
 using ExamenAlbertoMartinezCambioDivisas.Services.Repository.TransactionsRepository;
 
@@ -31,7 +24,7 @@ namespace ExamenAlbertoMartinezCambioDivisas.Controllers
         // GET: Transactions
         public async Task<ActionResult> Index()
         {
-            await this.transactionsRepository.CargarDatos();
+            await this.transactionsRepository.LoadData();
             return View(await this.transactionsRepository.GetAll());
         }
 

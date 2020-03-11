@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Threading.Tasks;
 using ExamenAlbertoMartinezCambioDivisas.DAL;
@@ -9,64 +8,64 @@ namespace ExamenAlbertoMartinezCambioDivisas.Services.Repository
 {
     public abstract class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        public CambioDivisasContext Context;
-        public DbSet<T> Table;
-        public IJsonConverter<T>  Conversor;
+        public CambioDivisasContext _divisasContext;
+        public DbSet<T> _table;
+        public IJsonConverter<T>  _jsonConverter;
 
         protected GenericRepository()
         {
-            this.Context = new CambioDivisasContext();
-            this.Table = this.Context.Set<T>();
-            this.Conversor = new JsonConverter<T>();
+            this._jsonConverter = new JsonConverter<T>();
+            this._divisasContext = new CambioDivisasContext();
+            this._table = this._divisasContext.Set<T>();
         }
 
         protected GenericRepository(CambioDivisasContext context)
         {
-            this.Context = context;
-            this.Table = context.Set<T>();
-            this.Conversor = new JsonConverter<T>();
+            this._jsonConverter = new JsonConverter<T>();
+            this._divisasContext = context;
+            this._table = context.Set<T>();
         }
 
-        protected GenericRepository(CambioDivisasContext context, IJsonConverter<T> conversor)
+        protected GenericRepository(CambioDivisasContext context, IJsonConverter<T> converter)
         {
-            this.Context = context;
-            this.Table = context.Set<T>();
-            this.Conversor = conversor;
+            this._jsonConverter = converter;
+            this._divisasContext = context;
+            this._table = context.Set<T>();
         }
 
-        public abstract Task CargarDatos();
+        public abstract Task LoadData();
 
         public virtual async Task Delete(object id)
         {
-            T existing = await this.Table.FindAsync(id);
-            this.Table.Remove(existing);
+            T existing = await this._table.FindAsync(id);
+            this._table.Remove(existing);
         }
 
         public virtual async Task<IEnumerable<T>> GetAll()
         {
-            return await this.Table.ToListAsync();
+            return await this._table.ToListAsync();
         }
 
         public virtual async Task<T> GetById(object id)
         {
-            return await this.Table.FindAsync(id);
+            return await this._table.FindAsync(id);
         }
 
         public virtual void Insert(T obj)
         {
-            this.Table.Add(obj);
+            this._table.Add(obj);
 
         }
 
         public virtual async Task Save()
         {
-            await this.Context.SaveChangesAsync();
+            await this._divisasContext.SaveChangesAsync();
         }
 
         public virtual void Update(T obj)
         {
-            this.Table.Attach(obj);
-            this.Context.Entry(obj).State = EntityState.Modified;
+            this._table.Attach(obj);
+            this._divisasContext.Entry(obj).State = EntityState.Modified;
         }
     }
 }

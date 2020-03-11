@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using ExamenAlbertoMartinezCambioDivisas.Services.Log;
 
 namespace ExamenAlbertoMartinezCambioDivisas.Controllers
@@ -12,7 +8,7 @@ namespace ExamenAlbertoMartinezCambioDivisas.Controllers
         private ILog log;
         protected override void OnException(ExceptionContext filterContext)
         {
-            this.log = new LogFichero();
+            this.log = new LogTxt();
 
             if (filterContext.ExceptionHandled)
             {
@@ -20,7 +16,7 @@ namespace ExamenAlbertoMartinezCambioDivisas.Controllers
 
             }
 
-            this.log.EscribirLog(filterContext.Exception.Message);
+            this.log.WriteLog(filterContext.Exception.Message);
 
             filterContext.Result = new ViewResult
             {

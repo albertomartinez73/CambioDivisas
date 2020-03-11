@@ -5,7 +5,7 @@ namespace ExamenAlbertoMartinezCambioDivisas.Services.Repository
 {
     public interface IGenericRepository<T> where T : class
     {
-        Task CargarDatos();
+        Task LoadData();
         Task<IEnumerable<T>> GetAll();
         Task<T> GetById(object id);
         void Insert(T obj);

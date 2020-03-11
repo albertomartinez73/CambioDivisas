@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using ExamenAlbertoMartinezCambioDivisas.DAL;
 using ExamenAlbertoMartinezCambioDivisas.Models;
 using ExamenAlbertoMartinezCambioDivisas.Services.Repository.RatesRepository;
 
@@ -16,14 +9,14 @@ namespace ExamenAlbertoMartinezCambioDivisas.Controllers
     public class RatesController : BaseController
     {
         //private CambioDivisasContext db = new CambioDivisasContext();
-        private IRatesRespository ratesRepository = null;
+        private IRatesRepository ratesRepository = null;
 
         public RatesController()
         {
             this.ratesRepository = new RatesRepository();
         }
 
-        public RatesController(IRatesRespository repositorio)
+        public RatesController(IRatesRepository repositorio)
         {
             this.ratesRepository = repositorio;
         }
@@ -31,7 +24,7 @@ namespace ExamenAlbertoMartinezCambioDivisas.Controllers
         // GET: Rates
         public async Task<ActionResult> Index()
         {
-            await ratesRepository.CargarDatos();
+            await ratesRepository.LoadData();
             return View(await this.ratesRepository.GetAll());
         }
 

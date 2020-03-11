@@ -1,41 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using ExamenAlbertoMartinezCambioDivisas.Models;
-using ExamenAlbertoMartinezCambioDivisas.Services.Repository;
-using ExamenAlbertoMartinezCambioDivisas.Services.Repository.RatesRepository;
 
 namespace ExamenAlbertoMartinezCambioDivisas.Services.MonedaConverter
 {
     public class MonedaConversor : IMonedaConversor
     {
-        private List<Rates> ListadoRates;
-        private decimal multiplicacion;
-
-        public void CargarDatos(List<Rates> listadoRates)
+        public List<Rates> _ratesList;
+        public void LoadRatesData(List<Rates> ratesList)
         {
-            this.ListadoRates = listadoRates;
+            this._ratesList = ratesList;
         }
 
-        public decimal ConversorMoneda(decimal amount, string currency, string to)
+        public decimal ValueConverter(decimal value, string from, string to)
         {
-
-            // AQUI HABRIA QUE IMPLEMENTAR EL GRAFO DE DIJKSTRA
-            foreach (var item in this.ListadoRates)
-            {
-                
-                if (item.From.Equals(currency) && item.To.Equals(to))
-                {
-                     this.multiplicacion = amount * item.Rate;
-                }
-                else
-                {
-                    this.multiplicacion = amount;
-                }
-            }
-
-            return this.multiplicacion;
+            /* AQUI TENDRIAMOS QUE IMPLEMENTAR EL ALGORITMO DE DIJKSTRA PARA BUSCAR LOS DATOS Y CALCULAR EL VALOR */
+            return value;
         }
     }
 }

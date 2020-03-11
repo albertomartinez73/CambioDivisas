@@ -1,45 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
 using ExamenAlbertoMartinezCambioDivisas.InfraestructuraTransversal.Exceptions;
 using ExamenAlbertoMartinezCambioDivisas.Models;
 using ExamenAlbertoMartinezCambioDivisas.Services.Factory;
-using Newtonsoft.Json;
 
 namespace ExamenAlbertoMartinezCambioDivisas.Services.Repository.RatesRepository
 {
-    public class RatesRepository : GenericRepository<Rates>, IRatesRespository
+    public class RatesRepository : GenericRepository<Rates>, IRatesRepository
     {
-        IRateFactory factory = new RateFactory();
-        public override async Task CargarDatos()
+        IRateFactory ratesFactory;
+
+        public RatesRepository()
         {
-            using var cliente = new HttpClient();
-            try
+            this.ratesFactory = new RateFactory();
+        }
+
+        public RatesRepository(IRateFactory rateFactory)
+        {
+            this.ratesFactory = rateFactory;
+        }
+        public override async Task LoadData()
+        {
+            using (var client = new HttpClient())
             {
+                try
+                {
+                    HttpResponseMessage response = client.GetAsync("http://quiet-stone-2094.herokuapp.com/rates.json").Result;
+                    List<Rates> rates;
+                    string content = response.Content.ReadAsStringAsync().Result;
+                    {
+                        rates = this._jsonConverter.DeserializeJson(content);
+                    }
 
-                var response = cliente.GetAsync("http://quiet-stone-2094.herokuapp.com/rates.json").Result;
-                string contenido = response.Content.ReadAsStringAsync().Result;
-                var ListaJsonRates = Conversor.DeserializeJson(contenido);
+                    this._table.RemoveRange(this._table);
 
-                Table.RemoveRange(Table);
+                    var ratesList = this.ratesFactory.CreateRatesList(rates);
+                    this._table.AddRange(ratesList);
 
-                ListaJsonRates.ForEach(x => factory.CreateRate(x));
-                Table.AddRange(factory.ListaRates());
+                    await this._divisasContext.SaveChangesAsync();
 
-                await Context.SaveChangesAsync();
-
-
-
-            }
-            catch (HttpRequestException)
-            {
-            }
-            catch (Exception e)
-            {
-                throw new RatesRepositoryException("Error en RatesRepository ", e);
+                }
+                catch (HttpRequestException) { }
+                catch (Exception ex)
+                {
+                    throw new RepositoryException("Ha habido un problema con el repositorio de Rates: RatesRepository.", ex);
+                }
             }
 
         }

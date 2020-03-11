@@ -1,8 +1,6 @@
 ﻿using ExamenAlbertoMartinezCambioDivisas.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using ExamenAlbertoMartinezCambioDivisas.InfraestructuraTransversal.Exceptions;
 using ExamenAlbertoMartinezCambioDivisas.Services.Specification;
 
@@ -10,39 +8,30 @@ namespace ExamenAlbertoMartinezCambioDivisas.Services.Factory
 {
     public class RateFactory : IRateFactory
     {
-        private Rates Rates;
-        ISpecificationRates rateSpecification = new SpecificationRates();
-        public List<Rates> ListadoRates { get; set; } = new List<Rates>();
-        public void CreateRate(Rates rate)
+        private ISpecificationRates _specificationRates = new SpecificationRates();
+        private List<Rates> _ratesList = new List<Rates>();
+
+        public List<Rates> CreateRatesList(List<Rates> ratesList)
         {
             try
             {
-                if (rateSpecification.IsSatisfyiedBy(rate))
+                foreach (var item in ratesList)
                 {
-                    this.Rates = new Rates
+                    if (this._specificationRates.IsSatisfyiedBy(item) == true)
                     {
-                        From = rate.From,
-                        To = rate.To,
-                        Rate = rate.Rate
-                    };
-
-                    this.ListadoRates.Add(this.Rates);
-
-                } else
-                {
-                    throw new SpecificationException("Error en el SpecificationRate: No se pudo crear el elemento Rate.");
+                        this._ratesList.Add(item);
+                    }
+                    else { 
+                        throw new FactoryException("No se ha podido crear el objeto rates: RatesFactory");
+                    }
                 }
-
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw new RatesFactoryExceptions("Error en RatesFactory ", e);
-            }
-        }
+                throw new FactoryException("No se ha podido crear el objeto rates: RatesFactory", ex);
 
-        public List<Rates> ListaRates()
-        {
-            return this.ListadoRates;
+            }
+            return this._ratesList;
         }
     }
 }

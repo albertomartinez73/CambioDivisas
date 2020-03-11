@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using ExamenAlbertoMartinezCambioDivisas.Services.Repository.RatesRepository;
 using ExamenAlbertoMartinezCambioDivisas.Services.Repository.TransactionsRepository;
 
 namespace ExamenAlbertoMartinezCambioDivisas.Controllers.Consultas
 {
-    public class ListadoPorSkuController : Controller
+    public class ListadoPorSkuController : BaseController
     {
-        private IRatesRespository ratesRespository;
-
+        private IRatesRepository ratesRespository;
         private ITransactionsRepository transactionsRepository;
 
         public ListadoPorSkuController()
@@ -22,7 +17,7 @@ namespace ExamenAlbertoMartinezCambioDivisas.Controllers.Consultas
             this.transactionsRepository = new TransactionsRepository();
         }
 
-        public ListadoPorSkuController(IRatesRespository ratesRespository, ITransactionsRepository transactionsRepository)
+        public ListadoPorSkuController(IRatesRepository ratesRespository, ITransactionsRepository transactionsRepository)
         {
             this.ratesRespository = ratesRespository;
             this.transactionsRepository = transactionsRepository;
@@ -30,8 +25,8 @@ namespace ExamenAlbertoMartinezCambioDivisas.Controllers.Consultas
         // GET: ListadoPorSku
         public async Task<ActionResult> Index()
         {
-            await this.ratesRespository.CargarDatos();
-            await this.transactionsRepository.CargarDatos();
+            await this.ratesRespository.LoadData();
+            await this.transactionsRepository.LoadData();
 
             var query = this.transactionsRepository.ListadoSku();
             return View( query);

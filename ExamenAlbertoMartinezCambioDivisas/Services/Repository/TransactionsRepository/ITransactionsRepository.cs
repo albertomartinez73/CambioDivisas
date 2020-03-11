@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using ExamenAlbertoMartinezCambioDivisas.Models;
 using ExamenAlbertoMartinezCambioDivisas.Models.ViewModel;
 
@@ -11,6 +7,6 @@ namespace ExamenAlbertoMartinezCambioDivisas.Services.Repository.TransactionsRep
     public interface ITransactionsRepository : IGenericRepository<Transactions>
     {
         List<ListadoPorSkuVM> ListadoSku();
-        IQueryable<Transactions> TransactionsPorSku(string sku);
+        List<Transactions> TransactionsPorSku(string sku);
     }
 }

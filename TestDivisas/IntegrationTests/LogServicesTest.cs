@@ -12,19 +12,19 @@ namespace TestDivisas
     public class LogServicesTest
     {
         public string Contain = "";
-        private readonly ILog _log = new LogFichero();
+        private readonly ILog _log = new LogTxt();
 
         [TestInitialize]
         public void LogServiceInit()
         {
             Contain = "Esto es una prueba de funcionamiento!";
-            _log.EscribirLog(Contain);
+            _log.WriteLog(Contain);
         }
 
         [TestMethod]
         public void LogWrite()
         {
-            _log.EscribirLog(Contain);
+            _log.WriteLog(Contain);
         }
     }
 }

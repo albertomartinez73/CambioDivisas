@@ -139,11 +139,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="InfraestructuraTransversal\Exceptions\SpecificationException.cs" />
-    <Compile Include="InfraestructuraTransversal\Exceptions\RatesFactoryExceptions.cs" />
-    <Compile Include="InfraestructuraTransversal\Exceptions\RatesRepositoryException.cs" />
-    <Compile Include="InfraestructuraTransversal\Exceptions\TransactionRepositoryException.cs" />
-    <Compile Include="InfraestructuraTransversal\Exceptions\TransactionsFactoryExceptions.cs" />
+    <Compile Include="InfraestructuraTransversal\Exceptions\ControllerException\ControllerException.cs" />
+    <Compile Include="InfraestructuraTransversal\Exceptions\ServicesException\LogException.cs" />
+    <Compile Include="InfraestructuraTransversal\Exceptions\ServicesException\RepositoryException.cs" />
+    <Compile Include="InfraestructuraTransversal\Exceptions\ServicesException\FactoryException.cs" />
+    <Compile Include="InfraestructuraTransversal\Exceptions\ServicesException\SpecificationException.cs" />
     <Compile Include="Models\Rates.cs" />
     <Compile Include="Models\Transactions.cs" />
     <Compile Include="Models\ValidationMetadata\RatesMetadata.cs" />
@@ -157,12 +157,13 @@
     <Compile Include="Services\JsonConverterService\IJsonConverter.cs" />
     <Compile Include="Services\JsonConverterService\JsonConverter.cs" />
     <Compile Include="Services\Log\ILog.cs" />
-    <Compile Include="Services\Log\LogFichero.cs" />
+    <Compile Include="Services\Log\LogConsole.cs" />
+    <Compile Include="Services\Log\LogTxt.cs" />
     <Compile Include="Services\MonedaConverter\IMonedaConversor.cs" />
     <Compile Include="Services\MonedaConverter\MonedaConversor.cs" />
     <Compile Include="Services\Repository\GenericRepository.cs" />
     <Compile Include="Services\Repository\IGenericRepository.cs" />
-    <Compile Include="Services\Repository\RatesRepository\IRatesRespository.cs" />
+    <Compile Include="Services\Repository\RatesRepository\IRatesRepository.cs" />
     <Compile Include="Services\Repository\RatesRepository\RatesRepository.cs" />
     <Compile Include="Services\Repository\TransactionsRepository\ITransactionsRepository.cs" />
     <Compile Include="Services\Repository\TransactionsRepository\TransactionsRepository.cs" />
